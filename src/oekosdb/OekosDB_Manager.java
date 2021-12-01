@@ -10,26 +10,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.*;
-import java.time.Clock;
-import java.time.ZoneId;
 import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
+/*
+*   Group 6: Nathalie Y., Nick H., John G.
+*/
 
-/**
- *
- * @author Natty Workstation
- */
 public class OekosDB_Manager extends javax.swing.JFrame {
 
     /**
