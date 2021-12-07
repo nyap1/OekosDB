@@ -495,12 +495,12 @@ public class OekosDB_Manager extends javax.swing.JFrame {
             new Object [][] {
 
             },
-            new String [] { //add "landlordID"
-                "propertyID", "Name", "Address"
+            new String [] { 
+                "propertyID", "Name", "Address", "Landlord First", "Landlord Last"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -510,7 +510,7 @@ public class OekosDB_Manager extends javax.swing.JFrame {
         try {
             Connection con = DriverManager.getConnection(SERVER, ID, PW);
             Statement stmt = con.createStatement();
-            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM nyap1db.Property WHERE manID = ?");
+            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM nyap1db.Property P, nyap1db.Landlord L WHERE manID = ? AND P.landID = L.landlordID");
             
             pstmt.setString(1, idTXT.getText());
             ResultSet rs = pstmt.executeQuery();
@@ -528,7 +528,8 @@ public class OekosDB_Manager extends javax.swing.JFrame {
                     columnData.add(rs.getString("propertyID"));
                     columnData.add(rs.getString("propName"));
                     columnData.add(rs.getString("propAddress"));
-                    //columnData.add(rs.getString("landID"));
+                    columnData.add(rs.getString("landlordFName"));
+                    columnData.add(rs.getString("landlordLName"));
                 }
                 RecordTable.addRow(columnData);
             }
@@ -554,12 +555,13 @@ public class OekosDB_Manager extends javax.swing.JFrame {
             new Object [][] {
 
             },
-            new String [] { //add "landlordID", "suiteID", "venID"
-                "leaseID", "Occupancy Status", "Start Date", "End Date", "propertyID" 
+            new String [] {
+                "leaseID", "Occupancy Status", "Start Date", "End Date", "PropertyID", "SuiteID", "LandlordID", "VendorID"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -578,7 +580,7 @@ public class OekosDB_Manager extends javax.swing.JFrame {
             
             int q = stdata.getColumnCount();
             
-            DefaultTableModel RecordTable = (DefaultTableModel)propTable.getModel();
+            DefaultTableModel RecordTable = (DefaultTableModel)leaseTable.getModel();
                     RecordTable.setRowCount(0);
             
             while(rs.next()){
@@ -590,13 +592,16 @@ public class OekosDB_Manager extends javax.swing.JFrame {
                     columnData.add(rs.getString("start_date"));
                     columnData.add(rs.getString("expiration_date"));
                     columnData.add(rs.getString("propID"));
+                    columnData.add(rs.getString("suiteID"));
+                    columnData.add(rs.getString("landlordID"));
+                    columnData.add(rs.getString("venID"));
                 }
                 RecordTable.addRow(columnData);
             }
         }catch (SQLException e){
             JOptionPane.showMessageDialog(null, e);
         }
-        jScrollPane3.setViewportView(propTable);
+        jScrollPane3.setViewportView(leaseTable);
         leaseFrame.getContentPane().add(jScrollPane3, BorderLayout.CENTER);
         leaseFrame.pack();
         leaseFrame.setVisible(true);
@@ -614,12 +619,13 @@ public class OekosDB_Manager extends javax.swing.JFrame {
             new Object [][] {
 
             },
-            new String [] { //add "landlordID", "suiteID", "venID"
-                "Invoice No.", "Due Date", "Expense Period", "Total Amount", "Amount Paid" 
+            new String [] {
+                "Invoice No.", "Due Date", "Expense Period", "Total Amount", "Amount Paid", "vendor name" 
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
+                java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -629,7 +635,8 @@ public class OekosDB_Manager extends javax.swing.JFrame {
         try {
             Connection con = DriverManager.getConnection(SERVER, ID, PW);
             Statement stmt = con.createStatement();
-            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM nyap1db.Invoice WHERE manID = ?");
+            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM nyap1db.Invoice, nyap1db.Vendor WHERE manID = ?"
+                    + "AND venID = VendorID");
             
             pstmt.setString(1, idTXT.getText()); //gets the managerID from the textbox
             
@@ -638,7 +645,7 @@ public class OekosDB_Manager extends javax.swing.JFrame {
             
             int q = stdata.getColumnCount();
             
-            DefaultTableModel RecordTable = (DefaultTableModel)propTable.getModel();
+            DefaultTableModel RecordTable = (DefaultTableModel)invoiceTable.getModel();
                     RecordTable.setRowCount(0);
             
             while(rs.next()){
@@ -650,13 +657,14 @@ public class OekosDB_Manager extends javax.swing.JFrame {
                     columnData.add(rs.getString("expense_period"));
                     columnData.add(rs.getString("total_amount"));
                     columnData.add(rs.getString("amount_paid"));
+                    columnData.add(rs.getString("venName"));
                 }
                 RecordTable.addRow(columnData);
             }
         }catch (SQLException e){
             JOptionPane.showMessageDialog(null, e);
         }
-        jScrollPane4.setViewportView(propTable);
+        jScrollPane4.setViewportView(invoiceTable);
         invoiceFrame.getContentPane().add(jScrollPane4, BorderLayout.CENTER);
         invoiceFrame.pack();
         invoiceFrame.setVisible(true);
